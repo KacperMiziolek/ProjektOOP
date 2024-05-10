@@ -1,6 +1,6 @@
-import pygame 
-import random
 
+import random 
+import pygame
 clock = pygame.time.Clock()
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
