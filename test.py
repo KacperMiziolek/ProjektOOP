@@ -1,17 +1,18 @@
-# Importing necessary libraries
-from environment import Environment
-from brain import Brain
 import numpy as np
 import time
 import pygame
+from environment import Environment
+from brain import Brain
+
+# Initialize Pygame
 pygame.init()
 
-# Defining parameters
+# Define parameters
 nLastStates = 4
 filepathToOpen = 'model2.h5'
 filepathToOpen_prey = 'model3.h5'
 
-# Creating Environment and Brain objects
+# Create Environment and Brain objects
 env = Environment()
 brain = Brain((env.screen_width, env.screen_height, nLastStates))
 model = brain.load_model(filepathToOpen)
@@ -34,7 +35,10 @@ def resetstates(screenMap, grid_size, nLastStates):
     currentstate[:, :, -1] = grid
 
     return np.expand_dims(currentstate, axis=0), np.expand_dims(currentstate, axis=0)
+
 # Main loop
+font = pygame.font.SysFont(None, 24)
+
 while True:
     # Handle Pygame events to prevent the window from becoming unresponsive
     for event in pygame.event.get():
@@ -60,27 +64,36 @@ while True:
             last_action_time = time.time()
             screenMap = env.get_grid_state()
             grid_size = env.grid_size  # Ensure grid_size is correctly defined
-            currentstate, nextstate = resetstates(screenMap, grid_size, nLastStates)
-            # Predict actions
+            currentstate, _ = resetstates(screenMap, grid_size, nLastStates)
+
+            # Predict actions for predators and prey
             qvalues = model.predict(currentstate)[0]
             action = np.argmax(qvalues)
             
             qvalues_prey = model_prey.predict(currentstate)[0]
             action_prey = np.argmax(qvalues_prey)
-            print(qvalues)
-            screenMap=env.get_grid_state()
+            
             # Update environment
             gameOver, _, _ = env.update_predator_food(action)
             _, _ = env.update_prey(action_prey)
 
             # Add new game frame to next state and remove the oldest frame
-            
-            nextState = np.append(nextstate[:, :, :, 1:], currentstate[:, :, :, :1], axis=3)
+            nextstate = np.append(currentstate[:, :, :, 1:], currentstate[:, :, :, :1], axis=3)
 
             # Update current state
-            currentState = nextState
+            currentstate = nextstate
 
             # Update the display
             screen.fill(env.backgroundcolor)  # Fill the screen with the background color
             env.all_sprites.draw(screen)      # Draw all sprites
-            pygame.display.flip()             # Update the display
+
+            # Draw the sidebar
+            pygame.draw.rect(screen, env.sidebar_color, (env.game_area_width, 0, env.sidebar_width, env.screen_height))
+            prey_count_text = font.render(f"Prey: {len(env.prey_group)}", True, env.white)
+            screen.blit(prey_count_text, (env.game_area_width + 10, 10))
+            predator_count_text = font.render(f"Predators: {len(env.predator_group)}", True, env.white)
+            screen.blit(predator_count_text, (env.game_area_width + 10, 30))
+            food_count_text = font.render(f"Food: {len(env.food_group)}", True, env.white)
+            screen.blit(food_count_text, (env.game_area_width + 10, 50))
+
+            pygame.display.flip()  # Update the display
