@@ -23,6 +23,9 @@ model_prey = brain_prey.load_model(filepathToOpen_prey)
 screen = pygame.display.set_mode((env.screen_width, env.screen_height))
 pygame.display.set_caption("Savannah Simulation")
 
+# Load the background image
+background_image = pygame.image.load('savanna1.png')
+
 # Function to reset game states
 def resetstates(screenMap, grid_size, nLastStates):
     # Reshape screenMap into a 2D grid
@@ -83,9 +86,11 @@ while True:
             # Update current state
             currentstate = nextstate
 
-            # Update the display
-            screen.fill(env.backgroundcolor)  # Fill the screen with the background color
-            env.all_sprites.draw(screen)      # Draw all sprites
+            # Draw the background image
+            screen.blit(background_image, (0, 0))
+
+            # Draw all sprites
+            env.all_sprites.draw(screen)
 
             # Draw the sidebar
             pygame.draw.rect(screen, env.sidebar_color, (env.game_area_width, 0, env.sidebar_width, env.screen_height))
