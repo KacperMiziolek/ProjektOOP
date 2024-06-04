@@ -8,4 +8,4 @@ Updates:
 -Utworzono działający prototyp \
 -Pomyślnie zintegrowano wszystki programy \
 -Udało się wytrenować modele oraz dodać wszystkie wymagane funkcjonalności \
--Dodano tło \
+-Dodano tło 
