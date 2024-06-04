@@ -25,8 +25,8 @@ GAME_AREA_WIDTH = SCREEN_WIDTH - SIDEBAR_WIDTH  # Width of the game area
 
 # Simulation parameters
 NUM_PREY = 50
-NUM_PREDATORS = 20
-FOOD_AMOUNT = 750
+NUM_PREDATORS = 10
+FOOD_AMOUNT = 250
 FOOD_RADIUS = 5
 PREY_SPEED = 5
 PREDATOR_SPEED = 6
@@ -166,6 +166,10 @@ class Food(pygame.sprite.Sprite):
 
 class Environment:
     def __init__(self):
+        self.white = WHITE
+        self.sidebar_width = SIDEBAR_WIDTH
+        self.sidebar_color =  SIDEBAR_COLOR
+        self.black = BLACK
         self.screen_width = SCREEN_WIDTH
         self.screen_height = SCREEN_HEIGHT
         self.game_area_width = GAME_AREA_WIDTH
